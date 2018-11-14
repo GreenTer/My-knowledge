@@ -1,0 +1,10 @@
+# encoding: cp866
+# Создать массив имён с помощью %W[]
+# Вывести имена с порядковым номером с помощью .each_with_index
+
+# book = [:Misha, :Dasha, :Sasha, :Fedya]
+book = %W[Misha Dasha Sasha Fedya]
+
+book.each_with_index do |name, i| # мог просто назвать book (т.е. так же!) Но чтобы не путался при воспоминании, назвал по другому
+	puts "#{i+1}.#{name}"
+end

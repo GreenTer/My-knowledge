@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>    
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="jquery.raty.css">
+    <script src="//code.jquery.com/jquery.min.js"></script>
+    <script src="jquery.raty.js"></script>
+
+    <title>Books</title>
+    <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <nav class="nav-bar navbar-default">
+      <div class="container">
+
+        <div class="navbar-header">
+          <%= link_to "Список книг", root_path, class: "navbar-brand" %>
+        </div>
+
+        <ul class="nav navbar-nav">
+          <li><%= link_to "Регистрация", new_user_registration_path %></li>
+
+          <% if user_signed_in? %>
+            <li><%= link_to "Выйти", destroy_user_session_path, method: :delete %></li>
+          <% else %>
+            <li><%= link_to "Войти", new_user_session_path %></li>
+          <% end %>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> Жанр <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+
+              <% Category.all.each do |category| %>
+                <li class="<%= 'active' if params[:category] == category.name %>">
+                  <%= link_to category.name, books_path(category: category.name), class: "link" %>
+                </li>
+              <% end %>
+            </ul>
+          </li>
+
+          <% if user_signed_in? %>
+            <li><%= link_to "Добавить книгу", new_book_path %></li>
+          <% end %>
+        </ul>
+              
+      </div>
+    </nav>
+
+    <p class="notice"><%= notice %></p>
+    <p class="alert"><%= alert %></p>
+
+    <div class="container">
+      <%= yield %>
+    </div>
+
+  </body>
+</html>

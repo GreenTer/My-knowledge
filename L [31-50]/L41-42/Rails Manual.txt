@@ -1,0 +1,265 @@
+I. Что за что отвечает
+
+(\config\routes.rb)                        - создаётся маршрут/путь
+(\views\contacts\new.html.erb)             - создаётся представление
+(\app\cointrollers\contacts_controller.rb) - создаются методы
+(\app\models\contact.rb)                   - создаются модели (условия для параметров)
+(\app\assets\stylesheets\application.css)  - создаются выводы ошибок и т.д.
+
+render                                     - возвращает какие-то данные (не прерывая комманды)
+render action: 'new'                       - возврат то что генерирует action: 'new' (new.html.erb)
+redirect_to                                - прерывает комманду и возвращает, на исходное положение условий
+************************************************************************************************************
+************************************************************************************************************
+
+
+
+II. Определения + полезное
+
+************************************  # Методы: первые 6 пунктов используется для resource & resources, index - только для resources (для множественных)
+new(GET)        - отправить
+create(POST)    - получить
+edit(GET)       - редактировать
+update(POST)    - редактировать
+destroy(DELETE) - удалить
+show(GET)       - показать
+index(GET)      - список (используется для множесвенных целей, resorces)
+
+
+************************************  # (cmd) проверка таблицы и т.д.
+start rails console                   - (cmd) запустить консоль
+Contact.all                           - (cmd) проверяем, созданную миграцию
+Contact.attribute_names               - (cmd) когда моделей много, узнать в какой модели, какие аттрибуты
+-----------------                     # как очистить БД
+sqlite3 development.sqlite3           - (cmd) открываем фаил через sqlite3 (db\)
+delete from articles;                 - (cmd) очищаем БД articles
+-----------------                     # как удалить конкретную сущность
+Article.find(1)                       - (cmd) поиск, конкретной статьи (в данном случае)
+@article = Article.find(1)            - задали конкретному параметру - конкретную сущность
+@article.destroy                      - удалили её
+
+
+************************************  # (cmd) полезные комманды
+rake routes                           - выводит список маршрутов (показывает все маршруты, созданные в программе)
+start rails server -e development     - ключ, запускается в окружении (существует несколько: development, production, test)
+rails generate GEN                    - параметры запуска (controller, model..) (rails g) - сокращённый вариант
+
+
+************************************ # команды sqlite3
+.tables                              - вывести таблицы
+.mode column                         - удобно разбить запись, чтобы читалась
+.headers on                          - вывести название столбцов
+select * from название таблицы;      - в программе можно задавать много запросов сразу, в конце запроса ставь ;
+pragma table_info(название таблицы); - вывести аттрибуты таблицы, что как отображается!
+.exit                                - выйти из програмы
+
+
+************************************                    # создание модели/БД (dm\migrate\имяфаила.rb) сама модель создаётся (app\models\contact.rb)
+article:references                                      - взаимоотношение между сущностями + добавить в модель(article.rb), с чем связыкаешь комманду has_many :comments
+
+-----------------                                       # создание БД
+rails generate model Contact email:string message:text  - (cmd) создаём модель с услоаиями (можно сразу, можно потом изменить в самой таблице), в данном случае email:string и message:text
+rails g model Contact email:string message:text         - (cmd) сокращённый вариант
+rake db:migrate                                         - (cmd) запустить миграцию
+
+-----------------                                                # примеры созданий БД
+rails g model Contact email:string message:text
+rails g model Article title:string text:text
+rails g model Comment author:string body:text article:references - ВАЖНО: article:references, означает, что Comment привязан к конкретному arcticle (Создаёт модель (\app\models\comment.rb) и добавляет условие: belongs_to :article внутри фаила) + добавить самому в модель(article.rb), связывающую комманду has_many :comments
+
+
+************************************              # как правильно добавлять ссылку
+<a href="/articles">Show all articles</a>         - так можно - но так не правильно (если поменяется что-то, то она будет битой)
+<%= link_to 'Show all articles', articles_path %> - правильное добавление ссылки
+<%= link_to 'Show', article_path(article) %>      - article (это :id конкретное) в контексте <% @articles.each do |article| %>
+************************************************************************************************************
+************************************************************************************************************
+
+
+
+III. Последовательность действий, для создания всего
+
+************************************  # план действий
+Создать приложение:
+  1. Создание Model + загрука её (rake db:migrate)
+  2. Создание Controller
+  3. Привязать маршрут(Routes) по которому следовать (resource/resources)
+  4. Actions (index(множественных, как resources), new+create, edit+update, destroy(delete)) т.е. работа в Controller
+  5. Views т.е. работа с самой страницей
+  6. Вывод ошибок
+-----------------
+P.S. создадим зависимый ресурс(комментарии), от основного(статья) (Articles -> Comments, Статья и к ней добавлять комментарии)
+  7.
+    - Создание Model + загрука её (rake db:migrate)
+    - Создание Controller
+    - Привязать маршрут(Routes) по которому следовать (resource/resources)
+    - Actions (index(множественных, как resources), new+create, edit+update, destroy(delete)) т.е. работа в Controller
+    - Views т.е. работа с самой страницей
+
+
+************************************  # создать приложение
+rails new name                        - (cmd) создать каталог rails
+start rails server                    - (cmd) запустить сервер
+start rails s                         - (cmd) запустить сервер, сокращённый вариант
+
+
+1. ************************************               # создание модели/БД (dm\migrate\имяфаила.rb) сама модель создаётся (app\models\article.rb)
+rails generate model Article title:string text:text   - (cmd) создаём модель с услоаиями (можно сразу, можно потом изменить в самой таблице), в данном случае title:string text:text
+rails g model Article title:string text:text          - (cmd) сокращённый вариант
+rake db:migrate                                       - (cmd) запустить миграцию
+
+************************************                  # пример обработки  MODELS (сбда включается валидация)
+class Article < ApplicationRecord
+  validates :title, presence: true
+  validates :text, presence: true
+end
+
+
+2. ************************************  # создание контроллера (пример для Articles)
+rails generate controller articles       - (cmd) создать "обработчик"
+rails g controller articles              - (cmd) создать "обработчик" сокращённый вариант
+
+
+3. ************************************                               # пример обработки  ROUTES
+Rails.application.routes.draw do                                      - открываем фаил (\config\routes.rb)
+  get 'home/index'
+  get 'terms' => 'pages#terms'                                        - определяем путь перехода terms
+  get 'about' => 'pages#about'                                        - определяем путь перехода about
+
+  resource :contacts, only: [:new, :create], path_names: {:new => ''} - изменили путь, пустая строка - означает, что путь останется неизменным (но если хочешь поменять, то пиши что нужно) + создаём правила для пользования (2 из 6 добавили)
+
+  resources :articles do                                              - привязали к arcicles путь comments (т.к. комментарии - зависят от сатьи)
+      resources :comments
+  end
+end
+
+
+4. ************************************           # пример обработки  Articles (добавление Actions)
+class ArticlesController < ApplicationController
+  def index
+    @articles = Article.all
+  end
+
+  def show                                        - добавили метод ПОКАЗАТЬ (пример со статьями)
+    @article = Article.find(params[:id])
+  end
+
+  def new                                         - добавили метод НОВЫЙ (он обязан присутствовать)
+  end
+
+  def create                                      - добавили метод СОЗДАТЬ
+    @article = Article.new(article_params)
+
+    if @contact.save                              - сохраняем данные, а сохранение - делает, автоматически валидацию!!!
+      redirect_to @contact                        - условия, от двойного submith'a !!
+    else                                          - условия, если не все поля будут заполнены
+      render action: 'new'                        - возврат страницы \contacts\new
+  end
+
+  def edit                                        - добавили метод КОРРЕКТИРОВАТЬ
+    @article = Article.find(params[:id])
+  end
+
+  def update                                      - добавили метод РЕАЛИЗАЦИЯ коррекции (в свзяки с методом edit)
+    @article = Article.find(params[:id])
+
+    if @article.update(article_params)
+      redirect_to @article
+    else
+      render action: 'edit'
+    end
+  end
+
+  private                                         - условия данных, которые будут использоваться выше (своего рода - защита)
+
+  def contact_params                              - создали функцию, обычно имя идёт от названия, с чем будем работать + _params  
+    params.require(:contact).permit(:email, :message) - указали, нужные параметры
+  end
+end
+
+
+5. ************************************                    # пример обработки  VIEWS (NEW)
+<h1>New article</h1>
+
+<%= form_for :article, url: articles_path do |f| %>       - форма вывода ошибки
+  <% if @article && @article.errors.any? %>
+  <p>
+    <ul>
+      <% @article.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </p>
+  <% end %>
+
+  <p>                                                     - форма вывода поля для ввода заголовка статьи
+    <%= f.label :title %><br/>
+    <%= f.text_field :title %>
+  </p>
+
+  <p>                                                     - форма вывода поля для ввода текста статьи
+    <%= f.label :text %><br/>
+    <%= f.text_area :text %>
+  </p>
+
+  <p>                                                     - добавление кнопки, отправки на сервер
+    <%= f.submit %>                                       - устойчивое выражение рельс, для отправки на сервер введённых данных
+  </p>
+<% end %>
+
+
+6. ************************************                 # пример обработки  ASSETS\STYLESHEETS (сбда включается ошибки)
+.field_with_errors input {                              - поле для INPUTS
+  border-color: red;                                    - делать границу красным (вводишь условия, которые тебе нужны)
+}
+
+.field_with_errors textarea {                           - поле для TEXTAREA
+  border-color: red;                                    - делать границу красным (вводишь условия, которые тебе нужны)
+
+
+7. ************************************         # создадим зависимый ресурс(комментарии), от основного(статья) (Articles -> Comments, Статья и к ней добавлять комментарии)
+rails g model Comment author:string body:text   - (cmd) создаём модель с услоаиями (можно сразу, можно потом изменить в самой таблице), в данном случае title:string text:text
+rake db:migrate                                 - (cmd) запустить миграцию
+
+class Comment < ApplicationRecord               # пример обработки  MODELS
+  belongs_to :article                           - условия зависимости от article
+end
+-----------------                               # создание контроллера
+rails g controller comments                     - (cmd) создать "обработчик" сокращённый вариант
+-----------------                                                     # пример обработки  ROUTES
+Rails.application.routes.draw do                                      - открываем фаил (\config\routes.rb)
+  get 'home/index'
+  get 'terms' => 'pages#terms'                                        - определяем путь перехода terms
+  get 'about' => 'pages#about'                                        - определяем путь перехода about
+
+  resource :contacts, only: [:new, :create], path_names: {:new => ''} - изменили путь, пустая строка - означает, что путь останется неизменным (но если хочешь поменять, то пиши что нужно) + создаём правила для пользования (2 из 6 добавили)
+
+  resources :articles do                                              - привязали к arcicles путь comments (т.к. комментарии - зависят от сатьи)
+      resources :comments
+  end
+end
+-----------------                                 # пример обработки  Articles (добавление Actions)
+class CommentsController < ApplicationController
+  def create
+    @article = Article.find(params[:article_id])
+    @article.comments.create(comment_params)
+    
+    redirect_to article_path(@article)
+  end
+
+  private
+
+  def comment_params
+    params.require(:comment).permit(:autor, :body)
+  end        
+end
+-----------------                                 # Views т.е. работа с самой страницей
+Views включён в зависимый ресурс Article, 
+
+
+************************************************************************************************************
+************************************************************************************************************
+
+
+
+IV. Кодинг

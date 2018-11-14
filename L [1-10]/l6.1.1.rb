@@ -1,0 +1,12 @@
+# encoding: cp866
+# 1000 рас выполнить следующий код при помощи times
+# print "Ваше имя"
+# sleep 0.03
+# с помощью 2х операторов вложенных друг в друга
+
+10.times do
+	100.times do
+		print "Sasha "
+		sleep 0.03
+	end
+end

@@ -1,0 +1,198 @@
+﻿######## activerecord + tux ########
+************************************
+I. Установка всех гемов (Gaemfile) + Rakefile
+bundle install
+gem install tux
+************************************************************************************************************
+************************************************************************************************************
+
+
+
+II. (cmd) Нужные комманды
+Rake -T 										# вывести комманды
+rake db:create_migration NAME=create_clients	# создать новую миграцию в db/migrate/
+rake db:migrate 								# применяет (выполняет) созданную миграцию
+rake db:rollback								# возврат к предыдущей миграции
+************************************************************************************************************
+************************************************************************************************************
+
+
+
+III. Подключение БД, создание БД
+set :database, "sqlite3:barbershop.db"				# Подключение/установка базы данных
+
+
+************************************ 	 			# подключаем модель (класс), через activerecord
+class Client < ActiveRecord::Base 					# создавать название - не во множественном числе
+end
+
+
+************************************ 	 			# к примеру 2ой класс
+class Barber < ActiveRecord::Base
+end
+
+
+************************************ 	 			# (cmd) создаёт новую миграцию в папке /db/migrate/ имя фаила - автоматически выбирается
+rake db:create_migration NAME=create_имя класса во множественном числе
+rake db:create_migration NAME=create_clients
+************************************ 	 			# корректируем таблицу (в /db/migrate/), (сверяем патч) добавляем что нам нужно, к примеру:
+class CreateClients < ActiveRecord::Migration[4.2]
+  def change
+  	create_table :clients do |t|
+  		t.text :name
+  		t.text :phone
+  		t.text :datestamp
+  		t.text :barber
+  		t.text :color
+
+  		t.timestamps
+  	end
+  end
+end
+
+
+************************************ 	 			# (cmd) мигрируем фаил в бд sqlite
+rake db:migrate
+
+
+************************************ 	 			# (cmd) проверяем, созданные таблицы
+sqlite3 названиефаила.db
+.tables												# вывести таблицы
+.mode column										# удобно разбить запись, чтобы читалась
+.headers on 										# вывести название столбцов
+select * from название таблицы;						# в программе можно задавать много запросов сразу, в конце запроса ставь ;
+.exit 												# выйти из програмы
+
+
+************************************ 	 			# параметры которые проверяются, или с ними что-то происходит
+class Client < ActiveRecord::Base
+	validates :name, presence: true, length: {minimum: 2} 	# presence => true, пишется как хеш
+	validates :phone, presence: true						# параметр + правило для него(хеш), параметр 2ой + правило для него(хеш) и т.д.
+	validates :datestamp, presence: true					# validates :name, presence: true
+	validates :barber, presence: true						# validates :name2, presence => true
+	validates :color, presence: true
+end
+************************************************************************************************************
+************************************************************************************************************
+
+
+
+IV. Правила
+.all								# читать фаил
+.create 							# создаёт объект в БД
+.new								# создаёт объект в нашей программе, чтобы его сохранить .save
+.save 								# происходит с валидацией! (30урок 35 минута - записать видео, про c.save)
+.Id 								# выводить по id - возростающему
+.order('created_at DESC')			# выводить по id - убывающему
+.find(params[:id])					# найти конкретный параметр
+.errors.full_messages.first 		# выводить сообщение об ошибке, если параметры не заполнены и т.д.
+
+@c = Client.new params[:client] 	# это вызвался хеш {'name' => '', 'phone' => '', 'datestamp' => '', 'barber' => '', 'color' => ''}
+************************************************************************************************************
+************************************************************************************************************
+
+
+
+P.S.
+http://guides.rubyonrails.org/active_record_basics.html			# Active-record
+http://guides.rubyonrails.org/active_record_validations.html	# Validation правила которые ты хочешь установить параметрам и т.д.
+
+$ bundle exec rake -T
+rake db:create            # Create the database from DATABASE_URL or config/database.yml for the current Rails.env (use db:create:all to create all dbs in the config)
+rake db:create_migration  # Create a migration (parameters: NAME, VERSION)
+rake db:drop              # Drops the database using DATABASE_URL or the current Rails.env (use db:drop:all to drop all databases)
+rake db:fixtures:load     # Load fixtures into the current environment's database
+rake db:migrate           # Migrate the database (options: VERSION=x, VERBOSE=false)
+rake db:migrate:status    # Display status of migrations
+rake db:rollback          # Rolls the schema back to the previous version (specify steps w/ STEP=n)
+rake db:schema:dump       # Create a db/schema.rb file that can be portably used against any DB supported by AR
+rake db:schema:load       # Load a schema.rb file into the database
+rake db:seed              # Load the seed data from db/seeds.rb
+rake db:setup             # Create the database, load the schema, and initialize with the seed data (use db:reset to also drop the db first)
+rake db:structure:dump    # Dump the database structure to db/structure.sql
+rake db:version           # Retrieves the current schema version number
+
+
+
+
+
+############ Sqlite3 ###############
+************************************
+I. Установка
+# Download 	https://www.sqlite.org/download.html
+# Precompiled Binaries for Windows (под свою винду shell+dll) 2фаила!
+# Скачать и распаковать C:\sqlite3 + добавить в PATH ;C:\sqlite3, зайти в эту папку и прописать
+# Скопируются фаилы в директорию Windows	copy * %WINDIR%\System32\
+# Проверка на то что всё установилось
+gem install sqlite3
+sqlite3 --version
+
+http://www.sqlishard.com/ 	# Пособие для проверки, теста комманд
+************************************************************************************************************
+************************************************************************************************************
+
+
+II. Подключение БД, создание БД
+	# создать таблицу и т.д. L25 40+min (TEXT лучше использовать, чем VARCHAR), у VARCHAR 255 символов
+CREATE TABLE "Cars" ("Id" INTEGER PRIMARY KEY AUTOINCREMENT, "Name", VARCHAR,"Price" INTEGER);
+************************************
+	# Создать таблицу, если такой нету
+CREATE TABLE IF NOT EXISTS "Users" ("Id" INTEGER PRIMARY KEY AUTOINCREMENT, "Name" TEXT, "Phone" TEXT, "Data_stapm" TEXT, "Barber" TEXT);
+************************************
+	# добавить в базу данных
+INSERT INTO Cars (Id, Name, Price) VALUES (1, 'BMW', 10000);
+************************************
+	# записать в таблицу
+INSERT INTO Cars (Name, Price) VALUES ('BMW', 10000);
+INSERT INTO Posts (content, Created_date) VALUES ('Something', datatime());		# datatime() - зафиксировать текущее время
+************************************
+	# сортировать по ID (тоесть наоборот, от большего к меньшему) # order by id desc
+@results = db.execute 'select * from Users order by id desc'
+************************************
+	# запрос - открыть фаил test.sqlite (пример)
+sqlite3 test.sqlite
+************************************
+.tables				# вывести таблицы
+.mode column		# удобно разбить запись, чтобы читалась
+.headers on 		# вывести название столбцов
+select * from Cars;	# в программе можно задавать много запросов сразу, в конце запроса ставь ;
+.exit 				# выйти из програмы
+************************************************************************************************************
+************************************************************************************************************
+
+
+III. P.S.
+	# как правильно делать запросы, от хакеров и т.д., чтобы он запросом не получил доступ к базе данных 1ч40м L25
+SQL Injection 
+	# inserting ruby string into sqlite
+https://stackoverflow.com/questions/13462112/inserting-ruby-string-into-sqlite	
+	# escaping strings for ruby sqlite insert
+https://stackoverflow.com/questions/9614236/escaping-strings-for-ruby-sqlite-insert
+	# db.execute( "INSERT INTO Products ( stockID, Name ) VALUES ( ?, ? )", [id, name])
+https://stackoverflow.com/questions/13462112/inserting-ruby-string-into-sqlite
+	# Escaping Strings For Ruby SQLite Insert
+https://stackoverflow.com/questions/9614236/escaping-strings-for-ruby-sqlite-insert
+
+Бесплатные:
+sqlite3 - структурированный язык запросов (разработано для бухгалтеров)
+mysql
+postgres
+
+Платные:
+ms sqlserver
+oracle
+
+
+
+
+
+########### Для Ubuntu #############
+************************************
+	# sqlitemanq установить программу!!
+https://apps.ubuntu.com/cat/applications/natty/sqliteman/
+************************************
+# SQLite3 (https://sqlite.org/download.html)
+	$ sudo gem install sqlite3
+	$ sudo apt install sqlite
+	$ sudo apt-get install sqlite3 libsqlite3-dev
+	$ sudo gem install sqlite3

@@ -1,0 +1,70 @@
+# encoding: cp866
+# создать альбом с 3мя песнями (в песни указкать продолжительность)
+
+class Albom
+   	attr_accessor :name, :songs
+
+	def initialize name
+	   	@name = name
+		@songs = []
+	end
+
+	def add_song song
+	   	@songs << song
+	end
+end
+
+class Song
+	attr_accessor :name, :durations
+
+	def initialize name
+	   	@name = name
+		@durations = [] # тут можно было просто сделать @duration = duration и в названии song1 = Song.new 'Podryga Piter', 6 !! добавить через запятую время песни
+	end
+	
+	def add_duration duration
+	   	@durations << duration
+	end
+end
+
+# создание альбома
+
+albom1 = Albom.new 'KPSS'
+
+# создание песни
+
+song1 = Song.new 'Podryga Piter'
+song2 = Song.new 'Zaberi'
+song3 = Song.new 'Ya ne lublu'
+
+# добавления песни в альбом
+
+albom1.add_song song1
+albom1.add_song song2
+albom1.add_song song3
+
+# добавлене продолжительности песни
+
+song1.add_duration '6 min'
+song2.add_duration '4 min'
+song3.add_duration '5 min'
+
+# создание списка альбомов и добавление альбомов в список
+
+all_alboms = []
+all_alboms << albom1
+
+
+# вывод результата на экран Альбом -> Песня -> Продолжительность
+
+all_alboms.each do |albom_name|
+   	puts "Albom: #{albom_name.name}"
+
+	albom_name.songs.each do |song_name|
+	   	puts "Song: #{song_name.name}"
+
+		song_name.durations.each do |song_durations|
+			puts "Duration: #{song_durations}"
+		end
+	end
+end

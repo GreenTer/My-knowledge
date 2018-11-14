@@ -1,0 +1,6 @@
+<%= simple_form_for @item do |f| %>
+  <%= f.input :title, label: "Задача"  %>
+  <%= f.input :description, label: "Описание задачи"  %>
+
+  <%= f.button :submit, "Сохранить" %>
+<% end %>

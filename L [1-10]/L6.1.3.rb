@@ -1,0 +1,33 @@
+# encoding: cp866
+# вывести 10 рас "Привет !" "Привет !!" "Привет !!!" и т.д.
+
+
+x = "Hi!"
+
+
+10.times do 
+
+	x = x + "!"
+	puts x
+
+end  # моё решение №1
+
+
+
+
+10.times do |x|
+	x = "!"*x
+	puts "HI!"+x
+end  # моё решение №2
+
+
+
+10.times do |x|
+	print "HI"
+	
+	x.times do
+		print "!"
+	end
+
+	puts
+end  # решение сансея !!  

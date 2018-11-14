@@ -1,0 +1,299 @@
+L41 00.00
+
+Вопросы с уроков:
+
+Доделать конспект Rails Manual, пункт 7 ! Добавить комментарии и т.д.
+
+************************************
+<%= form_for([@article, @article.comments.build]) do |f| %>    - Форма которая создаётся для связанных друг с другом сущностей (получится /articles/3/comments)
+@article.comments.build   - коллекция Collection
+
+Что такое .push - законспектировать
+
+************************************
+active records  - найти ссылку, всё о нём - законспектировать
+
+************************************
+Разобрать в будущем json
+
+************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Интервью:
+https://gist.github.com/ryansobol/5252653
+
+
+
+	# Что такое class?
+Класы держат какие-то данные, имеют методы которые взаимодействуют с этими данными, и используются для того чтобы создавать обьекты на основе этих классов
+
+class WhatAreClasses
+	def initialize
+		@data = "I'm instance data of this object. Hello."
+	end
+
+	def method
+		puts @data.gsub"("instance", "altered")" 	# .gsub - это?
+	end
+end
+
+object = WhatAreClasses.new
+object.method
+
+
+
+	# Что такое object?
+Объект это экземпляр класса
+
+
+
+	# Что такое модуль?
+Модуль служит как механизм для namespaces.
+
+
+
+	# Что такое namespaces?
+Namespaces - это пространство имён. В одном пространстве имён - может помещаться любое количество классов, в классах может содержаться любое количество методов
+namespace::Class.method
+
+
+
+	# mix-ins что такое?
+mix-ins - это множественное наследование
+
+module AMixIn
+  def who_am_i?
+    puts "An existentialist, that's who."
+  end
+end
+
+
+
+# String is already the parent class
+class DeepString < String
+  # extend adds instance methods from AMixIn as class methods
+  extend AMixIn
+end
+
+DeepString.who_am_i?
+ #=> An existentialist, that's who.
+
+AMixIn.new
+
+
+
+	# Можете ли вы сказать три уровня доступа для классов и модулей? Что они означают?
+1. public
+2. private
+3. protected
+
+class Animal
+  def run 		# публичный, по умолчанию
+  end
+
+  protected 	# почти не используют
+
+  def sleep
+    puts "могут быть доступны только для других объектов, того-же самого класса"
+  end
+
+  private 		# только в классе будет действовать
+
+  def home
+    puts "Incoming exception!"
+  end
+end
+
+a = Amimal.new
+a.run
+
+<--------------------------------- топ ответ, ниже
+
+class AccessLevel
+  def something_interesting
+    another = AccessLevel.new
+    another.public_method
+    another.protected_method
+    another.private_method
+  end
+
+  def public_method
+    puts "Public method. Nice to meet you."
+  end
+
+  protected
+
+  def protected_method
+    puts "Protected method. Sweet!"
+  end
+
+  private 
+
+  def private_method
+    puts "Incoming exception!"
+  end
+end
+
+AccessLevel.new.something_interesting 	# вывести метод который можно (public), тем самым, недоступный метод, выведится (protected), и приватный (private)
+ #=> Public method.  Nice to meet you.
+ #=> Protected method.  Sweet!
+ #=> NoMethodError: private method ‘private_method’ called for
+ #=>  #<AccessLevel:0x898c8>
+
+
+
+ 	# HTML5 Local Storage?
+Работал с Local Storage - позволяет сохранять данные локально (страницы). Это значит, что вы пишите какой то кусок Java Script кода и этот JS будет обращаться к локал сторадж и будет сохранён для вашей страницы.
+
+
+
+  # три способа вывода метода? Назовите 2а
+animal = Animal.new
+animal.run
+
+animal.send(:run)
+
+animal.method(:run).call
+
+
+
+  # Объясните, что означает эта конструкция:   x ||= y
+x op = y    # x = x || y
+x += 1      # x = x + 1
+
+x ||= y     # Если x - не определён, то он будет ровняться y, если определён - то он не меняется !!
+x = x || y
+
+x = 5
+x ||= 2  ->  x = x || 2
+puts x      # x = 5
+
+
+
+  # Что означает self? - Он указывает на текущий объект
+class WhatIsSelf
+  def test
+    puts "At the instance level, self is #{self}"
+  end
+
+  def self.test             # может работать без создания объекта
+    puts "At the class level, self is #{self}"
+  end
+end
+
+WhatIsSelf.test             # когда вызываешь Класс, но не создаёшь класс - тогда обрабатывается self
+ #=> At the class level, self is WhatIsSelf
+
+WhatIsSelf.new.test         # когда создаёшь класс, тогда 
+ #=> At the instance level, self is #<WhatIsSelf:0x28190>
+
+
+
+ # Что такое Proc? (процедура), существует 3 варианта (33 урок)
+1. анонимный метод, это функции без имени - и вызывается конструкцией .call
+# wants a proc, a lambda, AND a block
+def three_ways(proc, lambda, &block)
+  proc.call
+  lambda.call
+  yield # like block.call
+  puts "#{proc.inspect} #{lambda.inspect} #{block.inspect}"
+end
+
+anonymous = Proc.new { puts "I'm a Proc for sure." }
+nameless  = lambda { puts "But what about me?" }
+
+three_ways(anonymous, nameless) do
+  puts "I'm a block, but could it be???"
+end
+ #=> I'm a Proc for sure.
+ #=> But what about me?
+ #=> I'm a block, but could it be???
+ #=> #<Proc:0x00089d64> #<Proc:0x00089c74> #<Proc:0x00089b34>
+
+
+
+ # Что такое unit testing? (in classical terms) Это тестирование небольших модулей вашей программы, классов и т.д.
+The strongest candidates should be quite comfortable with test or behavior driven development.
+
+Unit testing, simply put, is testing methods -- the smallest unit in object-oriented programming. Strong candidates will argue that it allows a developer to flesh out their API before it's consumed by other systems in the application.
+
+The primary way to achieve this is to assert that the actual result of the method matches an expected result.
+
+require "test/unit"
+
+class Brokened
+  def uh_oh
+    "I needs fixing"
+  end
+end
+
+class BrokenedTest < Test::Unit::TestCase
+  def test_uh_oh
+    actual = Brokened.new
+    assert_equal("I'm all better!", actual.uh_oh)
+  end
+end
+ #=> Started
+ #=> F
+ #=> Finished in 0.663831 seconds.
+ #=> 
+ #=>   1) Failure:
+ #=> test_uh_oh:11
+ #=> <"I'm all better!"> expected but was
+ #=> <"I needs fixing">.
+ #=> 
+ #=> 1 tests, 1 assertions, 1 failures, 0 errors
+
+
+
+ # В чём отличаи этих кодов?
+
+// Java
+public boolean isEmpty(String s) {        # тут только код для строки, если же тоже самое нужно для массива, или хеша, то придётся еще написать код
+  return s.length() == 0;                 # тоесть мы пишем столько методов, сколько типов мы планируем использовать
+}
+
+# ruby                                    # этот метод обрабатывает всё
+def empty?(s)
+  return s.size == 0
+end
+
+
+
+  # В чем преимущество и недостатки руби?
+В руби пишется меньше кода, и он гибок.. НО требует больше тестов
+
+# Полезная инфа
+
+Что такое порт и т.д.
+127.0.0.1 - это порт, или localhost это тоже самое
+127.0.0.1:80  это тоже самое что http://localhost:4567/
+80  - это подключение по http:// - состояние statless, состояние покоя запрос-ответ-отсоединение
+443 - это подключение по https:// по защищённому порту
+telnet ya.ru 80 - подключение к странице
+GET/HTTP/1.0 - запрос
+
+Что происходит когда вы вводите URL в браузере
+Браузер проверяет cache
+Запрашивает оперативную систему, т.е. айпи адрес
+
+
+Полезное odesk-tests.com  есть тест для руби
+
+узнать что такое REST

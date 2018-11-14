@@ -1,0 +1,35 @@
+# encoding: cp866
+# Добавлять людей
+# Добавлять возраст
+# Сделать это через 2а массива
+
+# Сделать рефакторинг (сделать улушчение, более читаемый код! Вывести функциональность по добавлению элементов в отдельную функцию add_items)
+# Сделать функцию display_items которая выводит елементы
+# Сделать функцию remove_items, которая будет спрашивать какой элемент будем удалять
+
+arr = []
+
+loop do
+   	arr2 = []
+
+	print "Enter name to add: "
+	name = gets.strip
+
+	print "Enter age: "
+	age = gets.strip
+
+	if name == ""
+		break
+	end
+
+	arr2 << name
+	arr2 << age
+	arr << arr2
+end
+
+x = 0
+
+arr.each do |item|
+	x = x + 1
+	puts "#{x}.#{item[0]} #{item[1]}"
+end  # Сделал сансей

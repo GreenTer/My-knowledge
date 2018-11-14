@@ -1,0 +1,13 @@
+************************************ 	# подключаем фаил CSS
+<link href="/app.css" rel="stylesheet">
+************************************ 	# пример добавлении и корректировки кнопки
+#orders_button {
+	background-color: #F8F8F8; 			# цвет кнопки
+	border: none; 						# границы (без границ)
+	font-size: 22px; 					# размер кнопки
+	padding-right: 20px; 				# отступ справа
+	padding-left: 20px; 				# отступ слева
+	padding-bottom: 8px; 				# отступ сверху
+	padding-top: 8px; 					# отступ снизу
+	text-decoration: underline; 		# нижнее подчёркивание
+}

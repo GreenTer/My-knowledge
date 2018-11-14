@@ -1,0 +1,49 @@
+# encoding: cp866
+# ¯¥à¥¤¥« âì ¯à®£à ¬¬ã ¯®¤ class (ãá«®¢¨ï ¢ L14.1.0.rb)
+# ª« áá § ¯¨á­®© ª­¨¦ª¨
+# class Book
+# ...
+# end
+# b = Book.new
+# b.add_person
+# b.show_all
+
+class Book
+
+	def initialize
+	@hh = {}
+	end
+
+        def add_person options
+		# ¤®¡ ¢«ï¥â ¯ àã ¢ å¥è
+		puts "Already exist!" if @hh[options[:name]]  # !!! ¯à®¢¥àª  ­  ¯®¢â®à­®áâì
+
+		@hh[options[:name]] = options[:age]
+	end
+
+	def show_all
+		# ¯®ª §ë¢ ¥â å¥è
+		@hh.keys.each do |key|
+			age = @hh[key]
+			puts "Name: #{key}, age: #{age}"
+		end
+	end
+end
+
+b = Book.new
+loop do
+	# ¤®¡ ¢«ïâì ¯®ª  ­¥ ¢¢¥¤¥­  ¯ãáâ ï áâà®ª 
+	print "Enter name: "
+	name = gets.strip.capitalize
+
+	if name == ''
+		b.show_all
+		gets
+		exit
+	end
+
+	print "Enter age: "
+	age = gets.to_i                        
+
+	b.add_person :name => name, :age => age
+end
